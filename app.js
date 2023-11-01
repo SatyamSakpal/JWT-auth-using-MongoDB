@@ -23,7 +23,7 @@ app.get('/protected', verifyUser, (req, res) => {
 
 mongoose.connect(process.env.DBURL)
     .then(()=> {
-        app.listen(3000)
+        app.listen(process.env.PORT || 3000)
     })
     .catch((err)=> {
         console.log(err)

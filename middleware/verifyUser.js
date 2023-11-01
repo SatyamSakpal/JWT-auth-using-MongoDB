@@ -5,13 +5,13 @@ const verifyUser = async(req, res, next) => {
     if(token) {
         jwt.verify(token, process.env.SECRECT_ACCESS_KEY, (err, user)=> {
             if(user) {
-                res.locals.loginStatus = user
                 next()
             }else {
-                res.locals.loginStatus = null
-                res.redirect('/login')
+                res.redirect('/login') 
             }
         })
+    } else {
+        res.redirect('/login')
     }
 }
 
