@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App | Login</title>
+    <style>
+        .error{
+            color:red
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <div class="error"></div>
+        <label for="username">username:</label>
+        <input type="text" name="username" id="username" autocomplete="username" class="form" required>
+        <br><br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" class="form">
+        <input type="checkbox" onclick="myFunction()">Show Password
+        <br><br>
+        <button type="submit" id="login">Login</button>
+        <br><br>
+    </form>
+    
+    <a href="/signup">Sign Up</a>
+    <script>
+        function myFunction() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+        }
+
+        const form = document.querySelector('form')
+        const error = document.querySelector('.error')
+
+        form.addEventListener('submit', async(e) => {
+            console.log(e)
+            e.preventDefault()
+            error.textContent = ""
+
+            let username = form.username.value
+            let password = form.password.value
+
+            console.log(username, password)
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify({username, password})
+                })     
+                const data = await response.json()
+                console.log(data)
+
+                if(data.user){
+                    window.location = '/'
+                }
+
+                if(data.errors) {
+                    error.textContent = `${data.errors.username}${data.errors.password}`
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        })
+    </script>
+</body>
+</html>

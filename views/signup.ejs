@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App | SignUp</title>
+    <style>
+        .error{
+            color:red
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <div class="firstname_err error"></div>
+        <label for="firstName">First Name:</label>
+        <input type="text" name="firstName" id="first-name" autocomplete="name" class="form">
+        <br><br>
+        <div class="lastname_err error"></div>
+        <label for="lastName">Last Name:</label>
+        <input type="text" name="lastName" id="last-name" autocomplete="family-name" class="form">
+        <br><br>
+        <div class="username_err error"></div>
+        <label for="username">username:</label>
+        <input type="text" name="username" id="username" autocomplete="username" class="form" required>
+        <br><br>
+        <div class="gender_err error"></div>
+        <label >gender:
+            <select name="gender" id="gender" class="form">
+                <option value="">gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+                <option value="not preferred">Prefer not to say</option>
+            </select>
+        </label>
+        <br><br>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" autocomplete="email" class="form">
+        <br><br>
+        <div class="password_err error"></div>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" class="form">
+        <input type="checkbox" onclick="myFunction()">Show Password
+        <br><br>
+        <button type="submit" id="register">Register</button>
+    </form>
+
+    <br><br>
+    <a href="/login">Login</a>
+    <script>
+        function myFunction() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+        }
+
+        const form = document.querySelector('form')
+        const fnameErr = document.querySelector('.firstname_err')
+        const lnameErr = document.querySelector('.lastname_err')
+        const unameErr = document.querySelector('.username_err')
+        const genderErr = document.querySelector('.gender_err')
+        const passwordErr = document.querySelector('.password_err')
+        const errView = document.querySelectorAll('.error')
+
+        form.addEventListener('submit', async(e)=> {
+            e.preventDefault();
+
+            errView.textContent = ''
+
+            let firstname = form.firstName.value
+            let lastname = form.lastName.value
+            let username = form.username.value
+            let gender = form.gender.value
+            let email = form.email.value
+            let password = form.password.value
+            
+            console.log(firstname, lastname, username, gender, email, password)
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify({firstname, lastname, username, gender, email, password})
+                })     
+                const data = await response.json()
+
+                console.log(data)
+
+                if(data.user){
+                    window.location = '/'
+                }
+
+                if(data.errors) {
+                    fnameErr.textContent = data.errors.firstname
+                    lnameErr.textContent = data.errors.lastname
+                    unameErr.textContent = data.errors.username
+                    genderErr.textContent = data.errors.gender
+                    passwordErr.textContent = data.errors.password
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        })
+    </script>
+</body>
+</html>
